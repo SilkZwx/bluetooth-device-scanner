@@ -6,7 +6,6 @@ import os
 
 def subscribe_member(user_id, mac_address):
     url = os.environ.get("MONGO_URL")
-    # url = "mongodb://mongo:27017/"
     client = MongoClient(url)
     db = client["sample_database"]
     collection = db["sample_collection"]
@@ -43,7 +42,7 @@ def add_sample_data():
     insert_timestamp(user_id, in_time, out_time)
 
 
-def get_sample_data():
+def get_sample_data() -> dict:
     user_id = "c19001"
     user_data = collection.find_one({"_id": user_id})
     mac_address = "00:1A:2B:3C:4D:5E"
