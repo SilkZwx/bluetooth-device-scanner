@@ -1,28 +1,15 @@
 import subprocess
-import re
 import time
 import datetime
 from mongo_manager import MongoManager
 
 
-def check_bluetooth_devices():
-    mongo = MongoManager("sample_database", "sample_collection")
-    mongo.add_user(
-        {"_id": "m23a01", "mac_address": "D8:1C:79:26:83:50", "timestamps": []}
-    )
-    mac_addresses = mongo.get_mac_addresses()
+def add_user(mongo: MongoManager, id: str, mac_address: str):
+    mongo.add_user({"_id": id, "mac_address": mac_address, "timestamps": []})
 
-    # stdoutから既知のデバイスのリストを読み取る
-    # mac_addresses = []
-    # while True:
-    #     line = process.stdout.readline().strip()
-    #     match = re.search(r"Device ([0-9A-Fa-f:]{17})", line)
-    #     if match:
-    #         mac_address = match.group(1)
-    #         mac_addresses.append(mac_address)
-    #     if "Agent registered" in line:
-    #         print("Done reading devices.")
-    #         break
+
+def check_bluetooth_devices(mongo: MongoManager):
+    mac_addresses = mongo.get_mac_addresses()
 
     users_timestamp = []
     for mac_address in mac_addresses:
@@ -64,7 +51,10 @@ def check_bluetooth_devices():
                     process.stdin.write(f"disconnect {mac_address}\n")
                     process.stdin.flush()
                     break
-                elif "Failed to connect" in connect_output:
+                elif (
+                    "Failed to connect" in connect_output
+                    or "not available" in connect_output
+                ):
                     if user_timestamp["attend"]:
                         user_timestamp["attend"] = False
                         user_timestamp["out_time"] = datetime.datetime.now()
@@ -78,15 +68,9 @@ def check_bluetooth_devices():
                     print(f"Failed to connect to {mac_address}")
                     break
 
-        # bluetoothctlを終了
-        # process.stdin.write("quit\n")
-        # process.stdin.flush()
-        time.sleep(300)
-
-
-def record_connect_time():
-    address_dict = {}
+        time.sleep(120)
 
 
 if __name__ == "__main__":
-    check_bluetooth_devices()
+    mongo = MongoManager("sample_database", "sample_collection")
+    check_bluetooth_devices(mongo)
