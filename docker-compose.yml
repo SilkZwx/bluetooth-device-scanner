@@ -1,19 +1,22 @@
 version: '3.8'
 
 services:
-  # api:
-  #   build: .
-  #     context: .
-  #     dockerfile: ./endpoint/Dockerfile
-  #   ports:
-  #     - "8000:8000"
-  #   depends_on:
-  #     - mongo
-  #   environment:
-  #     - MONGO_URL=mongodb://mongo:27017
-  #   networks:
-  #     - mongo-network
-  #   tty: true
+  api:
+    build: 
+      context: .
+      dockerfile: ./endpoint/Dockerfile
+    container_name: api
+    volumes:
+      - ./endpoint:/usr/src/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/
+    networks:
+      - mongo-network
+    tty: true
 
 
   mongo:
