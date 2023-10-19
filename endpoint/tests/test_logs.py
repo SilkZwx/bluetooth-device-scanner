@@ -13,7 +13,7 @@ def sample_test():
 
 def test_create_log():
     response = client.post(
-        "/logs/", json={"user_id": "c19000", "mac_address": "00:1A:2B:3C:4D:5E"}
+        "/logs/", json={"user_id": "c19009", "mac_address": "00:1A:2B:3C:4D:5E"}
     )
     assert response.status_code == 200
     assert response.json() == {"message": "Log created"}
