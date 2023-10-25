@@ -3,8 +3,7 @@ import os
 
 
 class MongoManager:
-    def __init__(self, db_name: str, collection_name: str):
-        url = os.environ.get("MONGO_URL")
+    def __init__(self, db_name: str, collection_name: str, url: str):
         self.client = MongoClient(url)
         self.db = self.client[db_name]
         self.collection = self.db[collection_name]
