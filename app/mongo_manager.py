@@ -27,7 +27,8 @@ class MongoManager:
             }
         """
         self.collection.update_one(
-            {"mac_address": mac_address}, {"$push": {"timestamps": timestamp}}
+            {"mac_address": mac_address},
+            {"$push": {"timestamps": {"$each": [timestamp], "$position": 0}}},
         )
 
     def get_mac_addresses(self) -> list:
@@ -36,7 +37,13 @@ class MongoManager:
             macaddresses.append(user["mac_address"])
         return macaddresses
 
-    def get_timestamps(self, mac_address: str, count: int) -> list:
+    def get_timestamps(self, mac_address: str, count: int) -> list[dict]:
+        """
+        dict = {
+            "in": datetime,
+            "out": datetime
+            }
+        """
         query = {"mac_address": mac_address}
         projection = {"timestamps": {"$slice": -count}}
         result = self.collection.find_one(query, projection)
