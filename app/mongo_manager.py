@@ -27,7 +27,8 @@ class MongoManager:
             }
         """
         self.collection.update_one(
-            {"mac_address": mac_address}, {"$push": {"timestamps": timestamp}}
+            {"mac_address": mac_address},
+            {"$push": {"timestamps": {"$each": [timestamp], "$position": 0}}},
         )
 
     def get_mac_addresses(self) -> list:
@@ -35,3 +36,33 @@ class MongoManager:
         for user in self.collection.find():
             macaddresses.append(user["mac_address"])
         return macaddresses
+
+    def get_timestamps(self, mac_address: str, count: int) -> list[dict]:
+        """
+        dict = {
+            "in": datetime,
+            "out": datetime
+            }
+        """
+        query = {"mac_address": mac_address}
+        projection = {"timestamps": {"$slice": count}}
+        result = self.collection.find_one(query, projection)
+        if result:
+            return result.get("timestamps", [])
+        else:
+            # 該当するMACアドレスのデータがない場合
+            return None
+
+    def update_timestamp(self, mac_address: str, timestamp: dict) -> None:
+        """
+        timestamp = {
+            "in": datetime,
+            "out": datetime
+            }
+        """
+        query = {"mac_address": mac_address}
+        update_field = {
+            "timestamps.0.in": timestamp["in"],
+            "timestamps.0.out": timestamp["out"],
+        }
+        self.collection.update_one(query, {"$set": update_field})

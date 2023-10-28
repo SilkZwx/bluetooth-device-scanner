@@ -1,11 +1,27 @@
 import subprocess
 import time
-import datetime
+from datetime import datetime
 from mongo_manager import MongoManager
 
 
 def add_user(mongo: MongoManager, id: str, mac_address: str):
     mongo.add_user({"_id": id, "mac_address": mac_address, "timestamps": []})
+
+
+def add_timestamp(
+    mongo: MongoManager, mac_address: str, in_time: datetime, out_time: datetime
+):
+    previous_timestamps = mongo.get_timestamps(mac_address, 1)
+    prev_timestamp = previous_timestamps[0]
+
+    if prev_timestamp["out"].date() == out_time.date():
+        # 今日の日付のデータが既にある場合は退出時刻を更新する
+        prev_timestamp["out"] = out_time
+        mongo.add_timestamp(mac_address, prev_timestamp)
+    else:
+        # 今日の日付のデータがない場合は新しくデータを追加する
+        timestamp = {"in": in_time, "out": out_time}
+        mongo.add_timestamp(mac_address, timestamp)
 
 
 def check_bluetooth_devices(mongo: MongoManager):
@@ -46,7 +62,7 @@ def check_bluetooth_devices(mongo: MongoManager):
                     print(f"Successfully connected to {mac_address}")
                     if not user_timestamp["attend"]:
                         user_timestamp["attend"] = True
-                        user_timestamp["in_time"] = datetime.datetime.now()
+                        user_timestamp["in_time"] = datetime.now()
 
                     process.stdin.write(f"disconnect {mac_address}\n")
                     process.stdin.flush()
@@ -55,17 +71,19 @@ def check_bluetooth_devices(mongo: MongoManager):
                     "Failed to connect" in connect_output
                     or "not available" in connect_output
                 ):
+                    # 一度検出されたデバイスが検出されなくなった場合
                     if user_timestamp["attend"]:
                         user_timestamp["attend"] = False
-                        user_timestamp["out_time"] = datetime.datetime.now()
-                        mongo.add_timestamp(
+                        user_timestamp["out_time"] = datetime.now()
+                        add_timestamp(
+                            mongo,
                             mac_address,
-                            {
-                                "in": user_timestamp["in_time"],
-                                "out": user_timestamp["out_time"],
-                            },
+                            user_timestamp["in_time"],
+                            user_timestamp["out_time"],
                         )
-                    print(f"Failed to connect to {mac_address}")
+                        print(f"recorded {mac_address}")
+                    else:
+                        print(f"Failed to connect to {mac_address}")
                     break
 
         time.sleep(120)
