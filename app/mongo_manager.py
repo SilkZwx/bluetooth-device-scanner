@@ -35,3 +35,13 @@ class MongoManager:
         for user in self.collection.find():
             macaddresses.append(user["mac_address"])
         return macaddresses
+
+    def get_timestamps(self, mac_address: str, count: int) -> list:
+        query = {"mac_address": mac_address}
+        projection = {"timestamps": {"$slice": -count}}
+        result = self.collection.find_one(query, projection)
+        if result:
+            return result.get("timestamps", [])
+        else:
+            # 該当するMACアドレスのデータがない場合
+            return None
