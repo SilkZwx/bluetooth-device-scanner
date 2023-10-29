@@ -1,8 +1,11 @@
 from fastapi.testclient import TestClient
 import pytest
 from main import app
+import os
 
 client = TestClient(app)
+id = os.environ.get("ID")
+mac_address = os.environ.get("MAC_ADDRESS")
 
 
 def sample_test():
@@ -13,9 +16,7 @@ def sample_test():
 
 @pytest.mark.skip()
 def test_create_log():
-    response = client.post(
-        "/logs/", json={"user_id": "c19009", "mac_address": "00:1A:2B:3C:4D:5E"}
-    )
+    response = client.post("/logs/", json={"user_id": id, "mac_address": mac_address})
     assert response.status_code == 200
     assert response.json() == {"message": "Log created"}
 
@@ -32,7 +33,7 @@ def test_get_all_logs():
 
 
 def test_get_id_logs():
-    response = client.get("/logs/c19009")
+    response = client.get("/logs/" + id)
     assert response.status_code == 200
     resp = response.json()
     assert resp["id"] is not None

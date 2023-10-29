@@ -6,6 +6,7 @@ load_dotenv()
 url = os.environ.get("MONGO_URL")
 db_name = os.environ.get("MONGO_DBNAME")
 collection_name = os.environ.get("MONGO_COLLECTIONNAME")
+id = os.environ.get("ID")
 mongo = DatabaseService(db_name=db_name, collection_name=collection_name, url=url)
 
 
@@ -18,7 +19,7 @@ def test_get_all_logs():
 
 
 def test_get_id_logs():
-    log = mongo.get_id_logs("c19009")
+    log = mongo.get_id_logs(id)
     assert log["id"] is not None
     assert log["timestamps"] is not None
-    print(log)
+    # print(log)
