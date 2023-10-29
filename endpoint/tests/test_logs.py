@@ -29,3 +29,11 @@ def test_get_all_logs():
     assert resp["logs"][0]["id"] is not None
     assert resp["logs"][0]["mac_address"] is not None
     assert resp["logs"][0]["timestamps"] is not None
+
+
+def test_get_id_logs():
+    response = client.get("/logs/c19009")
+    assert response.status_code == 200
+    resp = response.json()
+    assert resp["id"] is not None
+    assert resp["timestamps"] is not None

@@ -15,3 +15,10 @@ def test_get_all_logs():
         assert log["_id"] is not None
         assert log["mac_address"] is not None
         assert log["timestamps"] is not None
+
+
+def test_get_id_logs():
+    log = mongo.get_id_logs("c19009")
+    assert log["id"] is not None
+    assert log["timestamps"] is not None
+    print(log)
