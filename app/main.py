@@ -2,6 +2,8 @@ import subprocess
 import time
 from datetime import datetime
 from mongo_manager import MongoManager
+import os
+from dotenv import load_dotenv
 
 
 def add_user(mongo: MongoManager, id: str, mac_address: str):
@@ -90,5 +92,8 @@ def check_bluetooth_devices(mongo: MongoManager):
 
 
 if __name__ == "__main__":
-    mongo = MongoManager("sample_database", "sample_collection")
+    load_dotenv()
+    db_name = os.environ.get("MONGO_DBNAME")
+    collection_name = os.environ.get("MONGO_COLLECTIONNAME")
+    mongo = MongoManager(db_name=db_name, collection_name=collection_name)
     check_bluetooth_devices(mongo)
