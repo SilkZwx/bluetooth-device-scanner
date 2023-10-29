@@ -1,37 +1,23 @@
 version: '3.8'
 
 services:
-  # api:
-  #   build: .
-  #     context: .
-  #     dockerfile: ./endpoint/Dockerfile
-  #   ports:
-  #     - "8000:8000"
-  #   depends_on:
-  #     - mongo
-  #   environment:
-  #     - MONGO_URL=mongodb://mongo:27017
-  #   networks:
-  #     - mongo-network
-  #   tty: true
-
-  app:
-    build:
+  api:
+    build: 
       context: .
-      dockerfile: ./app/Dockerfile
-    container_name: bluetooth-app
+      dockerfile: ./endpoint/Dockerfile
+    container_name: api
     volumes:
-      - ./app:/usr/src/app
+      - ./endpoint:/usr/src/app
     ports:
       - "8000:8000"
     depends_on:
       - mongo
     environment:
-      # - MONGO_URL=mongodb://root:example@mongo:27017/
       - MONGO_URL=mongodb://mongo:27017/
     networks:
       - mongo-network
     tty: true
+
 
   mongo:
     image: mongo:7.0.1
