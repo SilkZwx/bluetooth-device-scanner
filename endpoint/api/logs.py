@@ -1,13 +1,15 @@
 import os
 from dotenv import load_dotenv
 from fastapi import APIRouter
-from models.item import User
-from databese import mongo_manager
+from models.logs_request import User
+from models.logs_response import AllUserLogResponse, IdLogResponse
+from services.database_service import DatabaseService
 
 load_dotenv()
+url = os.environ.get("MONGO_URL")
 db_name = os.environ.get("MONGO_DBNAME")
 collection_name = os.environ.get("MONGO_COLLECTIONNAME")
-mongo = mongo_manager.MongoManager(db_name=db_name, collection_name=collection_name)
+mongo = DatabaseService(db_name=db_name, collection_name=collection_name, url=url)
 router = APIRouter()
 
 
@@ -23,6 +25,24 @@ def create_log(user: User):
     return {"message": "Log created"}
 
 
-# @router.get("/")
-# def get_all_logs():
-#     return {"message": "All logs"}
+@router.get("/")
+def get_all_logs() -> AllUserLogResponse:
+    try:
+        logs = mongo.get_all_logs()
+        mapped_logs = [{**log, "id": log.pop("_id")} for log in logs]
+        response = AllUserLogResponse.model_validate({"logs": mapped_logs})
+        return response
+    except Exception as e:
+        # print(e)
+        return {"message": "Failed to get all logs"}
+
+
+@router.get("/{id}")
+def get_id_logs(id: str):
+    try:
+        logs = mongo.get_id_logs(id)
+        response = IdLogResponse.model_validate(logs)
+        return response
+    except Exception as e:
+        # print(e)
+        return {"message": "Failed to get all logs"}
