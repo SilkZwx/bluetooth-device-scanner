@@ -24,3 +24,6 @@ class DatabaseService:
             "id": id,
             "timestamps": filtered_logs,
         }
+
+    def add_user(self, user_data: dict) -> None:
+        self.mongo.add_user(user_data)
