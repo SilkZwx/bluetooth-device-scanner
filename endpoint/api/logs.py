@@ -41,3 +41,13 @@ def get_id_logs(id: str):
     except Exception as e:
         # print(e)
         return {"message": "Failed to get all logs"}
+
+
+@router.delete("/{id}")
+def delete_user(id: str):
+    try:
+        db.delete_user(id)
+        return {"message": "Log deleted"}
+    except Exception as e:
+        # print(e)
+        return {"message": "Failed to delete log"}

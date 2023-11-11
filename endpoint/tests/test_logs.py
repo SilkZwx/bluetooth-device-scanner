@@ -21,6 +21,13 @@ def test_create_log():
     assert response.json() == {"message": "Log created"}
 
 
+@pytest.mark.skip()
+def test_delete_log():
+    response = client.delete("/logs/" + id)
+    assert response.status_code == 200
+    assert response.json() == {"message": "Log deleted"}
+
+
 def test_get_all_ids():
     response = client.get("/logs/")
     assert response.status_code == 200

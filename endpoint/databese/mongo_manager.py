@@ -18,6 +18,9 @@ class MongoManager:
         """
         self.collection.insert_one(user_data)
 
+    def delete_user(self, id: str) -> None:
+        self.collection.delete_one({"_id": id})
+
     def add_timestamp(self, mac_address: str, timestamp: dict) -> None:
         """
         timestamp = {

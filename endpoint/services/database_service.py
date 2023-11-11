@@ -27,3 +27,6 @@ class DatabaseService:
 
     def add_user(self, user_data: dict) -> None:
         self.mongo.add_user(user_data)
+
+    def delete_user(self, id: str) -> None:
+        self.mongo.delete_user(id)
