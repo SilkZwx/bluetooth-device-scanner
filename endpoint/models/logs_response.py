@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from models.logs import Timestamp
 
 
 class AllUserIdResponse(BaseModel):
@@ -7,4 +8,4 @@ class AllUserIdResponse(BaseModel):
 
 class IdLogResponse(BaseModel):
     id: str
-    timestamps: list[dict]
+    timestamps: list[Timestamp]
