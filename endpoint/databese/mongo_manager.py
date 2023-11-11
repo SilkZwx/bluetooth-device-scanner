@@ -1,5 +1,4 @@
 from pymongo import MongoClient
-import os
 
 
 class MongoManager:
@@ -18,6 +17,20 @@ class MongoManager:
         """
         self.collection.insert_one(user_data)
 
+    def delete_user(self, id: str) -> None:
+        self.collection.delete_one({"_id": id})
+
+    def update_user(self, user: dict) -> None:
+        """
+        user = {
+            "id": str,
+            "mac_address": str
+            }
+        """
+        result = self.collection.update_one(
+            {"_id": user["id"]}, {"$set": {"mac_address": user["mac_address"]}}
+        )
+
     def add_timestamp(self, mac_address: str, timestamp: dict) -> None:
         """
         timestamp = {
@@ -34,6 +47,12 @@ class MongoManager:
         for user in self.collection.find():
             macaddresses.append(user["mac_address"])
         return macaddresses
+
+    def get_ids(self) -> list:
+        ids = []
+        for user in self.collection.find():
+            ids.append(user["_id"])
+        return ids
 
     def get_timestamps(
         self, count: int, mac_address: str = None, id: str = None

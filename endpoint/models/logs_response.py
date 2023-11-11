@@ -1,11 +1,11 @@
 from pydantic import BaseModel
-from models.logs import Log
+from models.logs import Timestamp
 
 
-class AllUserLogResponse(BaseModel):
-    logs: list[Log]
+class AllUserIdResponse(BaseModel):
+    ids: list[str]
 
 
 class IdLogResponse(BaseModel):
     id: str
-    timestamps: list[dict]
+    timestamps: list[Timestamp]
