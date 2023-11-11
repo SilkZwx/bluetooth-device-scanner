@@ -35,6 +35,12 @@ class MongoManager:
             macaddresses.append(user["mac_address"])
         return macaddresses
 
+    def get_ids(self) -> list:
+        ids = []
+        for user in self.collection.find():
+            ids.append(user["_id"])
+        return ids
+
     def get_timestamps(
         self, count: int, mac_address: str = None, id: str = None
     ) -> list[dict]:

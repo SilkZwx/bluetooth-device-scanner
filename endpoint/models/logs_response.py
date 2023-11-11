@@ -1,9 +1,8 @@
 from pydantic import BaseModel
-from models.logs import Log
 
 
-class AllUserLogResponse(BaseModel):
-    logs: list[Log]
+class AllUserIdResponse(BaseModel):
+    ids: list[str]
 
 
 class IdLogResponse(BaseModel):

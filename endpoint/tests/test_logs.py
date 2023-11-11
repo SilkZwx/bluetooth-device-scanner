@@ -21,15 +21,13 @@ def test_create_log():
     assert response.json() == {"message": "Log created"}
 
 
-def test_get_all_logs():
+def test_get_all_ids():
     response = client.get("/logs/")
     assert response.status_code == 200
     resp = response.json()
-    assert resp["logs"] is not None
-
-    assert resp["logs"][0]["id"] is not None
-    assert resp["logs"][0]["mac_address"] is not None
-    assert resp["logs"][0]["timestamps"] is not None
+    assert resp["ids"] is not None
+    assert type(resp["ids"][0]) == str
+    # print(resp)
 
 
 def test_get_id_logs():
