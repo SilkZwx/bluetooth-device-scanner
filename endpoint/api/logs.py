@@ -51,3 +51,15 @@ def delete_user(id: str):
     except Exception as e:
         # print(e)
         return {"message": "Failed to delete log"}
+
+
+@router.put("/{id}")
+def update_user(id: str, user: User):
+    if user.user_id != id:
+        return {"message": "Invalid user_id"}
+    try:
+        db.update_user({"id": user.user_id, "mac_address": user.mac_address})
+        return {"message": "Log updated"}
+    except Exception as e:
+        # print(e)
+        return {"message": "Failed to update log"}

@@ -30,3 +30,6 @@ class DatabaseService:
 
     def delete_user(self, id: str) -> None:
         self.mongo.delete_user(id)
+
+    def update_user(self, user: dict) -> None:
+        self.mongo.update_user(user)

@@ -28,6 +28,15 @@ def test_delete_log():
     assert response.json() == {"message": "Log deleted"}
 
 
+@pytest.mark.skip()
+def test_update_log():
+    response = client.put(
+        "/logs/" + id, json={"user_id": id, "mac_address": "00:00:00:00:00:01"}
+    )
+    assert response.status_code == 200
+    assert response.json() == {"message": "Log updated"}
+
+
 def test_get_all_ids():
     response = client.get("/logs/")
     assert response.status_code == 200
